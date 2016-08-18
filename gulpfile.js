@@ -1,24 +1,12 @@
 var gulp = require('gulp');
 var eslint = require('gulp-eslint');
-var mocha = require('gulp-spawn-mocha');
 var runSequence = require('run-sequence');
 var cache = require('gulp-cached');
+var babel = require('gulp-babel');
 
 var scripts = {
-  src: 'src/**/*.js',
-  test: 'test/**/*.js'
+  src: 'src/**/*.js'
 };
-
-/**
- * Testing
- */
-
-gulp.task('test', function() {
-  return gulp.src(scripts.test)
-    .pipe(mocha({
-      istanbul: { report: 'none' }
-    }));
-});
 
 /**
  * Linting
@@ -38,7 +26,23 @@ function addLinterTask(name, path) {
 }
 
 addLinterTask('eslint-src', scripts.src);
-addLinterTask('eslint-test', scripts.test);
+
+/**
+ * Babel
+ */
+
+function addBabelTask(name, path, dest) {
+  gulp.task(name, function() {
+    return gulp.src(path)
+      .pipe(babel({
+        presets: ['es2015'],
+        minified: true
+      }))
+      .pipe(gulp.dest(dest));
+  });
+}
+
+addBabelTask('babel-src', scripts.src, 'dist');
 
 /**
  * Watch
@@ -52,12 +56,11 @@ function addWatchTask(name, path, tasks) {
   });
 }
 
-addWatchTask('watch-src', scripts.src, ['eslint-src', 'test']);
-addWatchTask('watch-test', scripts.test, ['eslint-test', 'test']);
+addWatchTask('watch-src', scripts.src, ['eslint-src', 'babel-src']);
 
 /**
  * Tasks
  */
 
-gulp.task('watch', ['watch-src', 'watch-test']);
+gulp.task('watch', ['watch-src']);
 gulp.task('default', ['watch']);
