@@ -219,35 +219,43 @@ export class LandsatMasker extends Masker {
       throw new Error('Mask conditions is invalid.');
     }
 
-    let masks = conditions.forEach(condition => {
-      switch (condition.type) {
-        case 'cloud':
-          return this.getCloudMask(condition.confidence);
-        case 'cirrus':
-          return this.getCirrusMask(condition.confidence);
-        case 'veg':
-          return this.getVegMask(condition.confidence);
-        case 'snow':
-          return this.getSnowMask(condition.confidence);
-        default:
-          throw new Error(`Condition type ${condition.type} unrecongized`);
-      }
-    });
-
     const x = this.rasterSize.x;
     const y = this.rasterSize.y;
-    let initialMask = ndarray(new Uint32Array(x * y * 4), [x, y]);
+    let result = ndarray(new Uint32Array(x * y * 4), [x, y]);
 
-    let selection = initialMask.hi(x, y).lo(0, 0);
+    let selection = result.hi(x, y).lo(0, 0);
     for(var i = 0; i < selection.shape[0]; ++i) {
       for(var j = 0; j < selection.shape[1]; ++j) {
         selection.set(i, j, 1);
       }
     }
 
-    return masks.reduce((multiMask, mask) => {
-      ops.band(multiMask, multiMask, mask);
-      return multiMask;
-    }, initialMask);
+    conditions.forEach(condition => {
+      let mask;
+
+      switch (condition.type) {
+        case 'cloud':
+          mask = this.getCloudMask(condition.confidence);
+          break;
+        case 'cirrus':
+          mask = this.getCirrusMask(condition.confidence);
+          break;
+        case 'water':
+          mask = this.getWaterMask(condition.confidence);
+          break;
+        case 'veg':
+          mask = this.getVegMask(condition.confidence);
+          break;
+        case 'snow':
+          mask = this.getSnowMask(condition.confidence);
+          break;
+        default:
+          throw new Error(`Condition type ${condition.type} unrecongized`);
+      }
+
+      ops.band(result, result, mask);
+    });
+
+    return result;
   }
 }
