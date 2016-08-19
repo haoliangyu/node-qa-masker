@@ -2,7 +2,7 @@
   "name": "qa-masker",
   "version": "0.1.0",
   "description": "Generate masks from Landsat and MODIS quality accessment band",
-  "main": "src/index.js",
+  "main": "dist/qa-masker.js",
   "scripts": {
     "compile": "babel --presets es2015 --minified -o dist/qa-masker.js src/",
     "prepublish": "npm run compile"
