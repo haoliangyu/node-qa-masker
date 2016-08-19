@@ -86,3 +86,9 @@ For the detail explanation, please read [MODIS Land Product QA Tutorial](https:/
 ### Command Line
 
 If the command line tool is wanted, please use [pymasker](https://github.com/haoliangyu/pymasker).
+
+## Change Log
+
+* **0.1.0**
+
+  * Initial version
