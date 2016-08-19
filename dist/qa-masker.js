@@ -4,7 +4,7 @@
    * Load raster image file.
    * @param {string}  filePath  path of image file. Supported format: tif (Landsat)
    * @return {undefined}
-   */_createClass(Masker,[{key:'loadFile',value:function loadFile(filePath){var ext=path.extname(filePath).toLowerCase();if(ext!=='.tif'){throw new Error('Unsupport file format '+ext)}var dataset=gdal.open(filePath);this.bandData=dataset.bands.get(1);this.rasterSize=dataset.rasterSize;this.geoTransform=dataset.geoTransform;this.spatialReference=dataset.spatialReference}/**
+   */_createClass(Masker,[{key:'loadFile',value:function loadFile(filePath){var ext=path.extname(filePath).toLowerCase();if(ext!=='.tif'){throw new Error('Unsupport file format '+ext)}var dataset=gdal.open(filePath);this.bandData=dataset.bands.get(1);this.rasterSize=dataset.rasterSize;this.geoTransform=dataset.geoTransform;this.srs=dataset.srs}/**
    * Load GDAL raster band data
    * @param {object}  bandData  GDAL band data
    * @return {undefined}
@@ -20,7 +20,7 @@
    * @param   {ndarray}     mask      ndarray mask
    * @param   {String}      filePath  tif file path
    * @return  {undefined}
-   */},{key:'saveAsTif',value:function saveAsTif(mask,filePath){filePath='mask.tif'||filePath;var ext=path.extname(filePath).toLowerCase();if(ext!=='.tif'){throw new Error('Unsupport file format '+ext)}var driver=gdal.drivers.get('GTiff');var dataset=driver.create(filePath,this.rasterSize.x,this.rasterSize.y,1,gdal.GDT_Byte);var bandData=dataset.bands.get(1);bandData.pixels.write(0,0,this.rasterSize.x,this.rasterSize.y,mask.data);dataset.spatialReference=this.spatialReference;dataset.geoTransform=this.geoTransform;dataset.flush()}}]);return Masker}();/**
+   */},{key:'saveAsTif',value:function saveAsTif(mask,filePath){filePath='mask.tif'||filePath;var ext=path.extname(filePath).toLowerCase();if(ext!=='.tif'){throw new Error('Unsupport file format '+ext)}var driver=gdal.drivers.get('GTiff');var dataset=driver.create(filePath,this.rasterSize.x,this.rasterSize.y,1,gdal.GDT_Byte);var bandData=dataset.bands.get(1);bandData.pixels.write(0,0,this.rasterSize.x,this.rasterSize.y,mask.data);dataset.srs=this.srs;dataset.geoTransform=this.geoTransform;dataset.flush()}}]);return Masker}();/**
  * Confidence of certain condition exists at the raster pixel
  */var LandsatConfidence=exports.LandsatConfidence={/**
    * Algorithm has high confidence that this condition exists (67-100 percent confidence)

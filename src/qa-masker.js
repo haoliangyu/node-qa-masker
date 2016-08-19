@@ -32,7 +32,7 @@ export class Masker {
     this.bandData = dataset.bands.get(1);
     this.rasterSize = dataset.rasterSize;
     this.geoTransform = dataset.geoTransform;
-    this.spatialReference = dataset.spatialReference;
+    this.srs = dataset.srs;
   }
 
   /**
@@ -107,7 +107,7 @@ export class Masker {
     let bandData = dataset.bands.get(1);
     bandData.pixels.write(0, 0, this.rasterSize.x, this.rasterSize.y, mask.data);
 
-    dataset.spatialReference = this.spatialReference;
+    dataset.srs = this.srs;
     dataset.geoTransform = this.geoTransform;
     dataset.flush();
   }
