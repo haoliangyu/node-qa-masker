@@ -89,6 +89,10 @@ If the command line tool is wanted, please use [pymasker](https://github.com/hao
 
 ## Change Log
 
+* **0.1.1**
+
+  * fix missing spatial reference bug in the output .tif file
+
 * **0.1.0**
 
-  * Initial version
+  * initial release
