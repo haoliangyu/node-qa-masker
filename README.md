@@ -1,6 +1,6 @@
 # node-qa-masker
 
-This is a NodeJS port for [pymasker](https://github.com/haoliangyu/pymasker). It provides a convenient way to produce mask from the Quality Assessment band of Landsat, as well as MODIS land products.
+This is a NodeJS port of [pymasker](https://github.com/haoliangyu/pymasker). It provides a convenient way to produce masks from the Quality Assessment band of Landsat 8 OLI images, as well as MODIS land products.
 
 ## Installation
 
@@ -128,6 +128,10 @@ Take a look at the [arcmasker](https://github.com/haoliangyu/arcmasker), the Arc
 
   * add `ModisMasker` and `ModisQuality` to support handier MODIS masking
 
+* **0.1.1**
+
+  * fix missing spatial reference bug in the output .tif file
+
 * **0.1.0**
 
-  * Initial version
+  * initial release
