@@ -259,3 +259,53 @@ export class LandsatMasker extends Masker {
     return result;
   }
 }
+
+/**
+ * Level of data quality of MODIS land products at each pixel.
+ * @type {Object}
+ */
+export const ModisQuality = {
+
+  /**
+   * Corrected product produced at ideal quality for all bands.
+   * @type {Number}
+   */
+  high: 0,
+
+  /**
+   * Corrected product produced at less than ideal quality for some or all bands.
+   * @type {Number}
+   */
+  medium: 1,
+
+  /**
+   * Corrected product not produced due to some reasons for some or all bands.
+   * @type {Number}
+   */
+  low: 2,
+
+  /**
+   * Corrected product not produced due to cloud effects for all bands.
+   * @type {Number}
+   */
+  low_cloud: 3
+};
+
+/**
+ * Provides access to functions that produce QA masks from quality assessment band of MODIS land products.
+ */
+export class ModisMasker extends Masker {
+
+  /**
+   * get a quality mask.
+   * @param   {Number}  quality             quality value from ModisQuality
+   * @param   {Object}  [options]           mask options
+   * @param   {String}  [options.operator]  how the confidence is used in the mask generation
+   * @return  {ndarray} mask                a ndarray mask
+   */
+  getQaMask(quality, options) {
+    options = options || {};
+    return this.getMask(0, 2, quality, options.operator);
+  }
+
+}

@@ -66,7 +66,38 @@ var mask = masker.getMultiMask([
 
 ### MODIS Land Products
 
-By using the lower level `Masker` class, the masking of MODIS land product QA band is supported. Because [node-gdal](https://github.com/scijs/ndarray) doesn't support HDF format, you need to convert the QA band to a GeoTIFF:
+By using the lower level `Masker` class, the masking of MODIS land product QA band is supported. Because [node-gdal](https://github.com/scijs/ndarray) doesn't support HDF format, you need to convert the QA band to a GeoTIFF first using like [QGIS](http://www.qgis.org/en/site/),
+
+A handy class `ModisMasker` is provided for particularly masking the quality of land products:
+
+``` javascript
+var qm = require('qa-masker');
+var Masker = qm.ModisMasker;
+var Quality = qm.ModisQuality;
+
+// read the band file to initialize
+var masker = new Masker('MODIS_QC_Band.tif');
+
+// generate mask in ndarray format
+var mask = masker.getQaMask(Quality.high);
+
+// save the mask as GeoTIFF
+masker.saveAsTif(mask, 'mask.tif');
+```
+
+The `ModisQuality` provides the definition of pixel quality:
+
+  * `ModisQuality.high`: corrected product produced at ideal quality for all bands
+
+  * `ModisQuality.medium`: corrected product produced at less than ideal quality for some or all bands
+
+  * `ModisQuality.low`: corrected product not produced due to some reasons for some or all bands
+
+  * `ModisQuality.low_cloud`: corrected product not produced due to cloud effects for all bands
+
+Masking other than the product quality is not directly provided because of the variety of bit structure for different products.
+
+A low-level method is available to extract mask with the understand of bit structure:
 
 ``` javascript
 var masker = new Masker('modis_qa_band.tif');
@@ -75,19 +106,27 @@ var mask = masker.getMask(0, 2, 2);
 
 `getMask(bitPos, bitLen, value)` function use to bit mask to extract quality mask:
 
-* `bitPos` indicates the start position of quality assessment bits
+* `bitPos`: the start position of quality assessment bits
 
-* `bitLen` indicates the length of all used quality assessment bits
+* `bitLen`: the length of all used quality assessment bits
 
-* `value` indicates the desired quality
+* `value`: the desired bit value (in integer)
 
 For the detail explanation, please read [MODIS Land Product QA Tutorial](https://lpdaac.usgs.gov/sites/default/files/public/modis/docs/MODIS_LP_QA_Tutorial-1b.pdf).
 
-### Command Line
+### Looking for command line tool?
 
 If the command line tool is wanted, please use [pymasker](https://github.com/haoliangyu/pymasker).
 
+### You are a GIS guy and want something GIS?
+
+Take a look at the [arcmasker](https://github.com/haoliangyu/arcmasker), the ArcMap toolbox that uses the same mechanism.
+
 ## Change Log
+
+* **0.2.0**
+
+  * add `ModisMasker` and `ModisQuality` to support handier MODIS masking
 
 * **0.1.0**
 

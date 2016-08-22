@@ -72,4 +72,27 @@
    * @param   {object}    condition.type        conditon type: cloud, cirrus, veg, water, snow
    * @param   {integer}   condition.confidence  confidence value from LandsatConfidence
    * @return  {ndarray}   mask                  a ndarray mask
-   */},{key:'getMultiMask',value:function getMultiMask(conditions){var _this2=this;if(!Array.isArray(conditions)||conditions.length<1){throw new Error('Mask conditions is invalid.')}var x=this.rasterSize.x;var y=this.rasterSize.y;var result=ndarray(new Uint32Array(x*y*4),[x,y]);var selection=result.hi(x,y).lo(0,0);for(var i=0;i<selection.shape[0];++i){for(var j=0;j<selection.shape[1];++j){selection.set(i,j,1)}}conditions.forEach(function(condition){var mask=void 0;switch(condition.type){case'cloud':mask=_this2.getCloudMask(condition.confidence);break;case'cirrus':mask=_this2.getCirrusMask(condition.confidence);break;case'water':mask=_this2.getWaterMask(condition.confidence);break;case'veg':mask=_this2.getVegMask(condition.confidence);break;case'snow':mask=_this2.getSnowMask(condition.confidence);break;default:throw new Error('Condition type '+condition.type+' unrecongized');}ops.band(result,result,mask)});return result}}]);return LandsatMasker}(Masker);
+   */},{key:'getMultiMask',value:function getMultiMask(conditions){var _this2=this;if(!Array.isArray(conditions)||conditions.length<1){throw new Error('Mask conditions is invalid.')}var x=this.rasterSize.x;var y=this.rasterSize.y;var result=ndarray(new Uint32Array(x*y*4),[x,y]);var selection=result.hi(x,y).lo(0,0);for(var i=0;i<selection.shape[0];++i){for(var j=0;j<selection.shape[1];++j){selection.set(i,j,1)}}conditions.forEach(function(condition){var mask=void 0;switch(condition.type){case'cloud':mask=_this2.getCloudMask(condition.confidence);break;case'cirrus':mask=_this2.getCirrusMask(condition.confidence);break;case'water':mask=_this2.getWaterMask(condition.confidence);break;case'veg':mask=_this2.getVegMask(condition.confidence);break;case'snow':mask=_this2.getSnowMask(condition.confidence);break;default:throw new Error('Condition type '+condition.type+' unrecongized');}ops.band(result,result,mask)});return result}}]);return LandsatMasker}(Masker);/**
+ * Level of data quality of MODIS land products at each pixel.
+ * @type {Object}
+ */var ModisQuality=exports.ModisQuality={/**
+   * Corrected product produced at ideal quality for all bands.
+   * @type {Number}
+   */high:0,/**
+   * Corrected product produced at less than ideal quality for some or all bands.
+   * @type {Number}
+   */medium:1,/**
+   * Corrected product not produced due to some reasons for some or all bands.
+   * @type {Number}
+   */low:2,/**
+   * Corrected product not produced due to cloud effects for all bands.
+   * @type {Number}
+   */low_cloud:3};/**
+ * Provides access to functions that produce QA masks from quality assessment band of MODIS land products.
+ */var ModisMasker=exports.ModisMasker=function(_Masker2){_inherits(ModisMasker,_Masker2);function ModisMasker(){_classCallCheck(this,ModisMasker);return _possibleConstructorReturn(this,Object.getPrototypeOf(ModisMasker).apply(this,arguments))}_createClass(ModisMasker,[{key:'getQaMask',/**
+   * get a quality mask.
+   * @param   {Number}  quality             quality value from ModisQuality
+   * @param   {Object}  [options]           mask options
+   * @param   {String}  [options.operator]  how the confidence is used in the mask generation
+   * @return  {ndarray} mask                a ndarray mask
+   */value:function getQaMask(quality,options){options=options||{};return this.getMask(0,2,quality,options.operator)}}]);return ModisMasker}(Masker);
