@@ -111,6 +111,14 @@ export class Masker {
     dataset.geoTransform = this.geoTransform;
     dataset.flush();
   }
+
+  __getBitMask(bitPos, bitLen) {
+    return parseInt(Array(bitLen).fill('1').join(''), 2) << bitPos;
+  }
+
+  __getValueMask(bitPos, value) {
+    return value << bitPos;
+  }
 }
 
 /**
@@ -147,6 +155,18 @@ export const LandsatConfidence = {
  */
 export class LandsatMasker extends Masker {
 
+  constructor(data) {
+    super(data);
+
+    this.bitInfo = {
+      cloud: { position: 14, length: 2 },
+      cirrus: { position: 12, length: 2 },
+      veg: { position: 8, length: 2 },
+      water: { position: 4, length: 2 },
+      snow: { position: 10, length: 2 }
+    };
+  }
+
   /**
    * get a cloud mask
    * @param   {Number}  confidence          confidence value from LandsatConfidence
@@ -156,7 +176,8 @@ export class LandsatMasker extends Masker {
    */
   getCloudMask(confidence, options) {
     options = options || {};
-    return this.getMask(14, 2, confidence, options.operator);
+    const bit = this.bitInfo.cloud;
+    return this.getMask(bit.position, bit.length, confidence, options.operator);
   }
 
   /**
@@ -168,7 +189,8 @@ export class LandsatMasker extends Masker {
    */
   getCirrusMask(confidence, options) {
     options = options || {};
-    return this.getMask(12, 2, confidence, options.operator);
+    const bit = this.bitInfo.cirrus;
+    return this.getMask(bit.position, bit.length, confidence, options.operator);
   }
 
   /**
@@ -180,7 +202,8 @@ export class LandsatMasker extends Masker {
    */
   getVegMask(confidence, options) {
     options = options || {};
-    return this.getMask(8, 2, confidence, options.operator);
+    const bit = this.bitInfo.veg;
+    return this.getMask(bit.position, bit.length, confidence, options.operator);
   }
 
   /**
@@ -192,7 +215,8 @@ export class LandsatMasker extends Masker {
    */
   getWaterMask(confidence, options) {
     options = options || {};
-    return this.getMask(4, 2, confidence, options.operator);
+    const bit = this.bitInfo.water;
+    return this.getMask(bit.position, bit.length, confidence, options.operator);
   }
 
   /**
@@ -204,7 +228,8 @@ export class LandsatMasker extends Masker {
    */
   getSnowMask(confidence, options) {
     options = options || {};
-    return this.getMask(10, 2, confidence, options.operator);
+    const bit = this.bitInfo.snow;
+    return this.getMask(bit.position, bit.length, confidence, options.operator);
   }
 
   /**
@@ -221,42 +246,23 @@ export class LandsatMasker extends Masker {
 
     const x = this.rasterSize.x;
     const y = this.rasterSize.y;
-    let result = ndarray(new Uint32Array(x * y * 4), [x, y]);
-
-    let selection = result.hi(x, y).lo(0, 0);
-    for(var i = 0; i < selection.shape[0]; ++i) {
-      for(var j = 0; j < selection.shape[1]; ++j) {
-        selection.set(i, j, 1);
-      }
-    }
+    let bitMask = 0;
+    let valueMask = 0;
 
     conditions.forEach(condition => {
-      let mask;
-
-      switch (condition.type) {
-        case 'cloud':
-          mask = this.getCloudMask(condition.confidence);
-          break;
-        case 'cirrus':
-          mask = this.getCirrusMask(condition.confidence);
-          break;
-        case 'water':
-          mask = this.getWaterMask(condition.confidence);
-          break;
-        case 'veg':
-          mask = this.getVegMask(condition.confidence);
-          break;
-        case 'snow':
-          mask = this.getSnowMask(condition.confidence);
-          break;
-        default:
-          throw new Error(`Condition type ${condition.type} unrecongized`);
-      }
-
-      ops.band(result, result, mask);
+      const bit = this.bitInfo[condition.type];
+      bitMask = bitMask | this.__getBitMask(bit.position, bit.length);
+      valueMask = valueMask | this.__getValueMask(bit.position, condition.confidence);
     });
 
-    return result;
+    let data = new Uint32Array(new ArrayBuffer(x * y * 4));
+    this.bandData.pixels.read(0, 0, x, y, data);
+
+    let mask = data.map(value => {
+      return (value & bitMask) === valueMask ? 1 : 0;
+    });
+
+    return ndarray(mask, [x, y]);
   }
 }
 

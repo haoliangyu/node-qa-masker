@@ -20,7 +20,7 @@
    * @param   {ndarray}     mask      ndarray mask
    * @param   {String}      filePath  tif file path
    * @return  {undefined}
-   */},{key:'saveAsTif',value:function saveAsTif(mask,filePath){filePath='mask.tif'||filePath;var ext=path.extname(filePath).toLowerCase();if(ext!=='.tif'){throw new Error('Unsupport file format '+ext)}var driver=gdal.drivers.get('GTiff');var dataset=driver.create(filePath,this.rasterSize.x,this.rasterSize.y,1,gdal.GDT_Byte);var bandData=dataset.bands.get(1);bandData.pixels.write(0,0,this.rasterSize.x,this.rasterSize.y,mask.data);dataset.srs=this.srs;dataset.geoTransform=this.geoTransform;dataset.flush()}}]);return Masker}();/**
+   */},{key:'saveAsTif',value:function saveAsTif(mask,filePath){filePath='mask.tif'||filePath;var ext=path.extname(filePath).toLowerCase();if(ext!=='.tif'){throw new Error('Unsupport file format '+ext)}var driver=gdal.drivers.get('GTiff');var dataset=driver.create(filePath,this.rasterSize.x,this.rasterSize.y,1,gdal.GDT_Byte);var bandData=dataset.bands.get(1);bandData.pixels.write(0,0,this.rasterSize.x,this.rasterSize.y,mask.data);dataset.srs=this.srs;dataset.geoTransform=this.geoTransform;dataset.flush()}},{key:'__getBitMask',value:function __getBitMask(bitPos,bitLen){return parseInt(Array(bitLen).fill('1').join(''),2)<<bitPos}},{key:'__getValueMask',value:function __getValueMask(bitPos,value){return value<<bitPos}}]);return Masker}();/**
  * Confidence of certain condition exists at the raster pixel
  */var LandsatConfidence=exports.LandsatConfidence={/**
    * Algorithm has high confidence that this condition exists (67-100 percent confidence)
@@ -36,43 +36,43 @@
    * @type {Number}
    */undefined:0};/**
  * Provides access to functions that produces masks from quality assessment band of Landsat 8.
- */var LandsatMasker=exports.LandsatMasker=function(_Masker){_inherits(LandsatMasker,_Masker);function LandsatMasker(){_classCallCheck(this,LandsatMasker);return _possibleConstructorReturn(this,Object.getPrototypeOf(LandsatMasker).apply(this,arguments))}_createClass(LandsatMasker,[{key:'getCloudMask',/**
+ */var LandsatMasker=exports.LandsatMasker=function(_Masker){_inherits(LandsatMasker,_Masker);function LandsatMasker(data){_classCallCheck(this,LandsatMasker);var _this=_possibleConstructorReturn(this,Object.getPrototypeOf(LandsatMasker).call(this,data));_this.bitInfo={cloud:{position:14,length:2},cirrus:{position:12,length:2},veg:{position:8,length:2},water:{position:4,length:2},snow:{position:10,length:2}};return _this}/**
    * get a cloud mask
    * @param   {Number}  confidence          confidence value from LandsatConfidence
    * @param   {Object}  [options]           mask options
    * @param   {String}  [options.operator]  how the confidence is used in the mask generation
    * @return  {ndarray} mask                a ndarray mask
-   */value:function getCloudMask(confidence,options){options=options||{};return this.getMask(14,2,confidence,options.operator)}/**
+   */_createClass(LandsatMasker,[{key:'getCloudMask',value:function getCloudMask(confidence,options){options=options||{};var bit=this.bitInfo.cloud;return this.getMask(bit.position,bit.length,confidence,options.operator)}/**
    * get a cirrus mask
    * @param   {Number}  confidence          confidence value from LandsatConfidence
    * @param   {Object}  [options]           mask options
    * @param   {String}  [options.operator]  how the confidence is used in the mask generation
    * @return  {ndarray} mask                a ndarray mask
-   */},{key:'getCirrusMask',value:function getCirrusMask(confidence,options){options=options||{};return this.getMask(12,2,confidence,options.operator)}/**
+   */},{key:'getCirrusMask',value:function getCirrusMask(confidence,options){options=options||{};var bit=this.bitInfo.cirrus;return this.getMask(bit.position,bit.length,confidence,options.operator)}/**
    * get a cirrus mask
    * @param   {Number}  confidence          confidence value from LandsatConfidence
    * @param   {Object}  [options]           mask options
    * @param   {String}  [options.operator]  how the confidence is used in the mask generation
    * @return  {ndarray} mask                a ndarray mask
-   */},{key:'getVegMask',value:function getVegMask(confidence,options){options=options||{};return this.getMask(8,2,confidence,options.operator)}/**
+   */},{key:'getVegMask',value:function getVegMask(confidence,options){options=options||{};var bit=this.bitInfo.veg;return this.getMask(bit.position,bit.length,confidence,options.operator)}/**
    * get a water body mask
    * @param   {Number}  confidence          confidence value from LandsatConfidence
    * @param   {Object}  [options]           mask options
    * @param   {String}  [options.operator]  how the confidence is used in the mask generation
    * @return  {ndarray} mask                a ndarray mask
-   */},{key:'getWaterMask',value:function getWaterMask(confidence,options){options=options||{};return this.getMask(4,2,confidence,options.operator)}/**
+   */},{key:'getWaterMask',value:function getWaterMask(confidence,options){options=options||{};var bit=this.bitInfo.water;return this.getMask(bit.position,bit.length,confidence,options.operator)}/**
    * get a snow/ice mask
    * @param   {Number}  confidence          confidence value from LandsatConfidence
    * @param   {Object}  [options]           mask options
    * @param   {String}  [options.operator]  how the confidence is used in the mask generation
    * @return  {ndarray} mask                a ndarray mask
-   */},{key:'getSnowMask',value:function getSnowMask(confidence,options){options=options||{};return this.getMask(10,2,confidence,options.operator)}/**
+   */},{key:'getSnowMask',value:function getSnowMask(confidence,options){options=options||{};var bit=this.bitInfo.snow;return this.getMask(bit.position,bit.length,confidence,options.operator)}/**
    * get a mask that matches all given conditions
    * @param   {object[]}  conditions            a list of condition
    * @param   {object}    condition.type        conditon type: cloud, cirrus, veg, water, snow
    * @param   {integer}   condition.confidence  confidence value from LandsatConfidence
    * @return  {ndarray}   mask                  a ndarray mask
-   */},{key:'getMultiMask',value:function getMultiMask(conditions){var _this2=this;if(!Array.isArray(conditions)||conditions.length<1){throw new Error('Mask conditions is invalid.')}var x=this.rasterSize.x;var y=this.rasterSize.y;var result=ndarray(new Uint32Array(x*y*4),[x,y]);var selection=result.hi(x,y).lo(0,0);for(var i=0;i<selection.shape[0];++i){for(var j=0;j<selection.shape[1];++j){selection.set(i,j,1)}}conditions.forEach(function(condition){var mask=void 0;switch(condition.type){case'cloud':mask=_this2.getCloudMask(condition.confidence);break;case'cirrus':mask=_this2.getCirrusMask(condition.confidence);break;case'water':mask=_this2.getWaterMask(condition.confidence);break;case'veg':mask=_this2.getVegMask(condition.confidence);break;case'snow':mask=_this2.getSnowMask(condition.confidence);break;default:throw new Error('Condition type '+condition.type+' unrecongized');}ops.band(result,result,mask)});return result}}]);return LandsatMasker}(Masker);/**
+   */},{key:'getMultiMask',value:function getMultiMask(conditions){var _this2=this;if(!Array.isArray(conditions)||conditions.length<1){throw new Error('Mask conditions is invalid.')}var x=this.rasterSize.x;var y=this.rasterSize.y;var bitMask=0;var valueMask=0;conditions.forEach(function(condition){var bit=_this2.bitInfo[condition.type];bitMask=bitMask|_this2.__getBitMask(bit.position,bit.length);valueMask=valueMask|_this2.__getValueMask(bit.position,condition.confidence)});var data=new Uint32Array(new ArrayBuffer(x*y*4));this.bandData.pixels.read(0,0,x,y,data);var mask=data.map(function(value){return(value&bitMask)===valueMask?1:0});return ndarray(mask,[x,y])}}]);return LandsatMasker}(Masker);/**
  * Level of data quality of MODIS land products at each pixel.
  * @type {Object}
  */var ModisQuality=exports.ModisQuality={/**

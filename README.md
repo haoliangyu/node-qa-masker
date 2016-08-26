@@ -124,6 +124,10 @@ Take a look at the [arcmasker](https://github.com/haoliangyu/arcmasker), the Arc
 
 ## Change Log
 
+* **0.2.1**
+
+  * optimize `LandsatMasker.getMultiMask()`
+
 * **0.2.0**
 
   * add `ModisMasker` and `ModisQuality` to support handier MODIS masking

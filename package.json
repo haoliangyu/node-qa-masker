@@ -1,6 +1,6 @@
 {
   "name": "qa-masker",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Generate masks from Landsat and MODIS quality accessment band",
   "main": "dist/qa-masker.js",
   "scripts": {
