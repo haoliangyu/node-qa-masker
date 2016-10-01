@@ -4,7 +4,7 @@
   "description": "Generate masks from Landsat and MODIS quality accessment band",
   "main": "dist/qa-masker.js",
   "scripts": {
-    "compile": "babel --presets es2015 --minified -o dist/qa-masker.js src/",
+    "compile": "gulp compile",
     "prepublish": "npm run compile"
   },
   "repository": {
@@ -32,6 +32,7 @@
     "gulp-batch": "^1.0.5",
     "gulp-cached": "^1.1.0",
     "gulp-eslint": "^3.0.1",
+    "gulp-optimize-js": "^1.0.3",
     "gulp-plumber": "^1.1.0",
     "gulp-watch": "^4.3.9"
   },

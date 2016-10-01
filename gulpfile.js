@@ -5,6 +5,7 @@ var babel = require('gulp-babel');
 var plumber = require('gulp-plumber');
 var watch = require('gulp-watch');
 var batch = require('gulp-batch');
+var optimizeJS = require('gulp-optimize-js');
 
 var src = './src/**/*.js';
 
@@ -22,6 +23,7 @@ gulp.task('compile', function () {
       presets: ['es2015'],
       minified: true
     }))
+    .pipe(optimizeJS())
     .pipe(gulp.dest('dist'));
 });
 
