@@ -41,6 +41,8 @@ Five methods are provided for masking:
 
 * `getSnowMask(confidence)`
 
+* `getFillMask()` (for filled pixels)
+
 The `LandsatConfidence` class provide the definition of the confidence that certain condition exists at the pixel:
 
 * `LandsatConfidence.high` (66% - 100% confidence)
@@ -121,21 +123,3 @@ If the command line tool is wanted, please use [pymasker](https://github.com/hao
 ### You are a GIS guy and want something GIS?
 
 Take a look at the [arcmasker](https://github.com/haoliangyu/arcmasker), the ArcMap toolbox that uses the same mechanism.
-
-## Change Log
-
-* **0.2.1**
-
-  * optimize `LandsatMasker.getMultiMask()`
-
-* **0.2.0**
-
-  * add `ModisMasker` and `ModisQuality` to support handier MODIS masking
-
-* **0.1.1**
-
-  * fix missing spatial reference bug in the output .tif file
-
-* **0.1.0**
-
-  * initial release

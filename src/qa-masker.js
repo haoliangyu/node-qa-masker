@@ -1,6 +1,5 @@
 var gdal = require('gdal');
 var ndarray = require('ndarray');
-var ops = require("ndarray-ops");
 var path = require('path');
 
 /**
@@ -163,7 +162,8 @@ export class LandsatMasker extends Masker {
       cirrus: { position: 12, length: 2 },
       veg: { position: 8, length: 2 },
       water: { position: 4, length: 2 },
-      snow: { position: 10, length: 2 }
+      snow: { position: 10, length: 2 },
+      fill: { position: 0, length: 1 }
     };
   }
 
@@ -230,6 +230,15 @@ export class LandsatMasker extends Masker {
     options = options || {};
     const bit = this.bitInfo.snow;
     return this.getMask(bit.position, bit.length, confidence, options.operator);
+  }
+
+  /**
+   * get a mask of filled pixels
+   * @return  {ndarray} mask                a ndarray mask
+   */
+  getFillMask() {
+    const bit = this.bitInfo.fill;
+    return this.getMask(bit.position, bit.length, 1);
   }
 
   /**
