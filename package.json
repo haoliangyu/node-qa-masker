@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/haoliangyu/node-qa-mask.git"
+    "url": "git+https://github.com/haoliangyu/node-qa-masker.git"
   },
   "keywords": [
     "landsat",
@@ -19,9 +19,9 @@
   "author": "Haoliang Yu <haholiang.yu@outlook.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/haoliangyu/node-qa-mask/issues"
+    "url": "https://github.com/haoliangyu/node-qa-masker/issues"
   },
-  "homepage": "https://github.com/haoliangyu/node-qa-mask#readme",
+  "homepage": "https://github.com/haoliangyu/node-qa-masker#readme",
   "devDependencies": {
     "babel-cli": "^6.11.4",
     "babel-preset-es2015": "^6.13.2",
